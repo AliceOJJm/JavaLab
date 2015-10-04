@@ -6,7 +6,6 @@
 package javalab;
 import db.DatabaseConnector;
 import db.DatabaseManager;
-import java.sql.Connection;
 import java.sql.SQLException;
         
 public class JavaLab {
