@@ -15,6 +15,7 @@ public class JavaLab {
         DatabaseConnector dbConnector = new DatabaseConnector();
         DatabaseManager dbManager = new DatabaseManager(dbConnector.getConnection());
         System.out.println("Hello!");
+        dbConnector.closeConnection();
     }
     
 }

@@ -21,4 +21,8 @@ public class DatabaseConnector {
     public Connection getConnection(){
         return this.dbConnection;
     }
+    
+    public void closeConnection() throws SQLException{
+        this.dbConnection.close();
+    }
 }
