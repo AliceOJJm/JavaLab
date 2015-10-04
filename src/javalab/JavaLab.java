@@ -4,7 +4,8 @@
  * and open the template in the editor.
  */
 package javalab;
-import dbConnector.*;
+import db.DatabaseConnector;
+import db.DatabaseManager;
 import java.sql.Connection;
 import java.sql.SQLException;
         
@@ -12,7 +13,7 @@ public class JavaLab {
 
     public static void main(String[] args) throws ClassNotFoundException, SQLException {
         DatabaseConnector dbConnector = new DatabaseConnector();
-        Connection dbConnection = dbConnector.getConnection();
+        DatabaseManager dbManager = new DatabaseManager(dbConnector.getConnection());
         System.out.println("Hello!");
     }
     
