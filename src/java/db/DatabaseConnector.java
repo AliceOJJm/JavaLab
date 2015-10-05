@@ -12,10 +12,11 @@ public class DatabaseConnector {
     protected String driverName;
     protected Connection dbConnection;
     
-    public DatabaseConnector() throws ClassNotFoundException, SQLException{
+    public DatabaseConnector() throws ClassNotFoundException, SQLException, InstantiationException, IllegalAccessException{
         this.driverName = "com.mysql.jdbc.Driver";
-        Class.forName(this.driverName);
-        this.dbConnection = DriverManager.getConnection ("jdbc:mysql://localhost/JavaLab?user=sqluser&password=root");
+        Class.forName(this.driverName).newInstance();
+        this.dbConnection = DriverManager.getConnection ("jdbc:mysql://localhost:3306/local-site?" +
+                 "user=root&password=");
     }
     
     public Connection getConnection(){
