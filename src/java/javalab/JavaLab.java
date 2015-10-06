@@ -10,7 +10,7 @@ import java.sql.SQLException;
         
 public class JavaLab {
 
-    public static void main(String[] args) throws ClassNotFoundException, SQLException {
+    public static void main(String[] args) throws ClassNotFoundException, SQLException, InstantiationException, IllegalAccessException {
         DatabaseConnector dbConnector = new DatabaseConnector();
         DatabaseManager dbManager = new DatabaseManager(dbConnector.getConnection());
         System.out.println("Hello!");

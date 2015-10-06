@@ -3,11 +3,12 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/D:/Учёба/ПрогСП/JavaLab/src/javalab/JavaLab.java</file>
-            <file>file:/D:/Учёба/ПрогСП/JavaLab/src/db/DatabaseConnector.java</file>
-            <file>file:/D:/Учёба/ПрогСП/JavaLab/src/db/DatabaseManager.java</file>
-            <file>file:/D:/Учёба/ПрогСП/JavaLab/src/subjectArea/Manufacturer.java</file>
-            <file>file:/D:/Учёба/ПрогСП/JavaLab/src/subjectArea/Souvenir.java</file>
+            <file>file:/C:/универ/3%20курс/ПСП/web/JavaApp/src/java/web/ProducerList.java</file>
+            <file>file:/C:/универ/3%20курс/ПСП/web/JavaApp/src/java/javalab/JavaLab.java</file>
+            <file>file:/C:/универ/3%20курс/ПСП/web/JavaApp/src/java/web/AddProducer.java</file>
+            <file>file:/C:/универ/3%20курс/ПСП/web/JavaApp/src/java/web/SouvenirList.java</file>
+            <file>file:/C:/универ/3%20курс/ПСП/web/JavaApp/src/java/db/DatabaseManager.java</file>
+            <file>file:/C:/универ/3%20курс/ПСП/web/JavaApp/web/index.jsp</file>
         </group>
     </open-files>
 </project-private>
