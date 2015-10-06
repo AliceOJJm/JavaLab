@@ -26,19 +26,31 @@ public class ProducerList extends HttpServlet {
             /* TODO output your page here. You may use following sample code. */
             out.println("<!DOCTYPE html>");
             out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet ProducerList</title>");            
-            out.println("</head>");
-            while(res.next()){
-                out.println(res.getString("title"));
-            }
-            out.println("<body>");
-            out.println("<h1>Servlet ProducerList at " + request.getContextPath() + "</h1>");
-            while(res.next()){
-                String ProducerName = res.getString("title");
-                out.println(ProducerName);
-            }
-            out.println("</body>");
+                out.println("<head>");
+                    out.println("<title>Servlet ProducerList</title>");            
+                out.println("</head>");
+                out.println("<body>");
+                    out.println("<h1>Servlet ProducerList at " + request.getContextPath() + "</h1>");
+                    out.println("<table border=\"1\">");
+                        out.println("<tbody>");
+                            while(res.next()){
+                                out.println("<tr>");
+                                    out.println("<td>");
+                                        out.println(res.getString("id"));
+                                    out.println("</td>");
+                                    out.println("<td>");
+                                        out.print("<a href=\"producer?name="+res.getString("title")+"\">");
+                                            out.print(res.getString("title"));
+                                        out.println("</a>");
+                                    out.println("</td>");
+                                    out.println("<td>");
+                                        out.println(res.getString("country"));
+                                    out.println("</td>");
+                                out.println("</tr>");
+                            }
+                        out.println("</tbody>");
+                    out.println("</table>");
+                out.println("</body>");
             out.println("</html>");
         }
         dbConnector.closeConnection();
@@ -57,14 +69,43 @@ public class ProducerList extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
-            processRequest(request, response);
-        } catch (SQLException ex) {
-            Logger.getLogger(ProducerList.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(ProducerList.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            Logger.getLogger(ProducerList.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
+            PrintWriter out = response.getWriter();
+            String choosenManufacturerName = request.getParameter("name");
+            if(choosenManufacturerName == null || "".equals(choosenManufacturerName)){
+                processRequest(request, response);
+            }
+            out.println("<!DOCTYPE html>");
+            out.println("<html>");
+                out.println("<head>");
+                    out.println("<title>Servlet ProducerList</title>");
+                out.println("</head>");
+                out.println("<body>");
+                    out.println("<h1>Product list of " + request.getParameter("name") + "</h1>");
+                    DatabaseConnector dbConnector;
+                    dbConnector = new DatabaseConnector();
+                    DatabaseManager dbManager = new DatabaseManager(dbConnector.getConnection());
+                    ResultSet res = dbManager.getSouvenirsByManufacturers(choosenManufacturerName);
+                    out.println("<table border=\"1\">");
+                        out.println("<tbody>");
+                            while(res.next()){
+                                out.println("<tr>");
+                                    out.println("<td>");
+                                        out.println(res.getString("title"));
+                                    out.println("</td>");
+                                    out.println("<td>");
+                                        out.print(res.getString("price"));
+                                    out.println("</td>");
+                                    out.println("<td>");
+                                        out.println(res.getString("date"));
+                                    out.println("</td>");
+                                out.println("</tr>");
+                            }
+                        out.println("</tbody>");
+                    out.println("</table>");
+                out.println("</body>");
+            out.println("</html>");
+            dbConnector.closeConnection();
+        } catch (ClassNotFoundException | SQLException | InstantiationException | IllegalAccessException ex) {
             Logger.getLogger(ProducerList.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
