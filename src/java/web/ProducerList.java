@@ -27,10 +27,12 @@ public class ProducerList extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
                 out.println("<head>");
-                    out.println("<title>Servlet ProducerList</title>");            
+                    out.println("<title>Servlet ProducerList</title>");
+                    out.println("<link rel=\"stylesheet\" type=\"text/css\" href=\"bootstrap.css\">");
+                    out.println("<link rel=\"stylesheet\" type=\"text/css\" href=\"bootstrap-theme.css\">");
                 out.println("</head>");
                 out.println("<body>");
-                    out.println("<h1>Servlet ProducerList at " + request.getContextPath() + "</h1>");
+                    out.println("<h1 class=\"alert alert-info\" align=\"center\">Servlet ProducerList at " + request.getContextPath() + "</h1>");
                     out.println("<table border=\"1\">");
                         out.println("<tbody>");
                             while(res.next()){
@@ -78,9 +80,11 @@ public class ProducerList extends HttpServlet {
             out.println("<html>");
                 out.println("<head>");
                     out.println("<title>Servlet ProducerList</title>");
+                    out.println("<link rel=\"stylesheet\" type=\"text/css\" href=\"bootstrap.css\">");
+                    out.println("<link rel=\"stylesheet\" type=\"text/css\" href=\"bootstrap-theme.css\">");
                 out.println("</head>");
                 out.println("<body>");
-                    out.println("<h1>Product list of " + request.getParameter("name") + "</h1>");
+                    out.println("<h1 class=\"alert alert-info\" align=\"center\">Product list of " + request.getParameter("name") + "</h1>");
                     DatabaseConnector dbConnector;
                     dbConnector = new DatabaseConnector();
                     DatabaseManager dbManager = new DatabaseManager(dbConnector.getConnection());

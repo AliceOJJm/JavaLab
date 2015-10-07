@@ -46,10 +46,12 @@ public class SouvenirList extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet SouvenirList</title>");            
+            out.println("<title>Servlet SouvenirList</title>");
+            out.println("<link rel=\"stylesheet\" type=\"text/css\" href=\"bootstrap.css\">");
+            out.println("<link rel=\"stylesheet\" type=\"text/css\" href=\"bootstrap-theme.css\">");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet SouvenirList at " + request.getContextPath() + "</h1>");
+            out.println("<h1 class=\"alert alert-info\" align=\"center\">Servlet SouvenirList at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }

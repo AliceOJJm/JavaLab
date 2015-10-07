@@ -15,8 +15,7 @@ public class DatabaseConnector {
     public DatabaseConnector() throws ClassNotFoundException, SQLException, InstantiationException, IllegalAccessException{
         this.driverName = "com.mysql.jdbc.Driver";
         Class.forName(this.driverName).newInstance();
-        this.dbConnection = DriverManager.getConnection ("jdbc:mysql://localhost:3306/local-site?" +
-                 "user=root&password=");
+        this.dbConnection = DriverManager.getConnection ("jdbc:mysql://localhost/JavaLab?user=root&password=");
     }
     
     public Connection getConnection(){

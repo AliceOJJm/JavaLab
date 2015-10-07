@@ -3,10 +3,12 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <link rel="stylesheet" type="text/css" href="bootstrap.css">
+        <link rel="stylesheet" type="text/css" href="bootstrap-theme.css">
         <title>Souvenirs</title>
     </head>
     <body>
-        <h1>
+        <h1 class="alert alert-info" align="center">
             Welcome to Souvenirs
         </h1>
             <a href="producer"><input type="button" value="View Producers" /></a>
