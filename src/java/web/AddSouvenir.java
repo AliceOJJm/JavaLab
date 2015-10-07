@@ -50,10 +50,12 @@ public class AddSouvenir extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet AddSouvenir</title>");            
+            out.println("<title>Servlet AddSouvenir</title>");
+            out.println("<link rel=\"stylesheet\" type=\"text/css\" href=\"bootstrap.css\">");
+            out.println("<link rel=\"stylesheet\" type=\"text/css\" href=\"bootstrap-theme.css\">");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet AddSouvenir at " + request.getContextPath() + "</h1>");
+            out.println("<h1 class=\"alert alert-info\" align=\"center\">Servlet AddSouvenir at " + request.getContextPath() + "</h1>");
             out.println("<form name=\"AddSouvenir\" action=\"..\\souvenir\" method=\"POST\">\n" +
                         "    <input type=\"text\" name=\"Name\" placenolder=\"name..\" />\n" +
                         "    <input type=\"number\" name=\"Price\" placeholder=\"price\"/>\n " +
