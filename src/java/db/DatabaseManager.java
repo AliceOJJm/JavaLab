@@ -2,10 +2,11 @@
 package db;
 import subjectArea.*;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class DatabaseManager {
     protected Connection dbConnection;
@@ -45,10 +46,22 @@ public class DatabaseManager {
         return query(queryStr);
     }
     
-    public ResultSet getCheapestManufacturers(double priceBound) throws SQLException{
-        String queryStr = "SELECT * FROM Manufacturers INNER JOIN Souvenirs ON Manufacturers.id = Souvenirs.manufacturer_id WHERE Souvenirs.price < '" + priceBound + "'";
-        return query(queryStr);
-    }
+    public ResultSet getSouvenirsByCountry(String country) throws SQLException{ 
+        String queryStr = "SELECT * FROM Souvenirs INNER JOIN Manufacturers ON Souvenirs.manufacturer_id = Manufacturers.id WHERE Manufacturers.country = '" + country + "'"; 
+        return query(queryStr); 
+    } 
+
+    public ResultSet getManufacturersByTitleYear(String title, SimpleDateFormat date) throws SQLException{ 
+        Date dt = new java.util.Date(); 
+        String dbDate = date.format(dt); 
+        String queryStr = "SELECT DISTINCT * FROM Manufacturers INNER JOIN Souvenirs ON Manufacturers.id = Souvenirs.manufacturer_id WHERE Souvenirs.title = '" + title + "' AND Souvenirs.date = " + dbDate + ";"; 
+        return query(queryStr); 
+    } 
+
+    public ResultSet getCheapestManufacturers(double priceBound) throws SQLException{ 
+        String queryStr = "SELECT DISTINCT * FROM Manufacturers INNER JOIN Souvenirs ON Manufacturers.id = Souvenirs.manufacturer_id WHERE Souvenirs.price < '" + priceBound + "'"; 
+        return query(queryStr); 
+}
     
     private void initializeTables() throws SQLException{
         ResultSet souvenirsTable = query("show tables like 'Souvenirs'");

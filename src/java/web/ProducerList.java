@@ -41,7 +41,7 @@ public class ProducerList extends HttpServlet {
                                         out.println(res.getString("id"));
                                     out.println("</td>");
                                     out.println("<td>");
-                                        out.print("<a href=\"producer?name="+res.getString("title")+"\">");
+                                        out.print("<a href=\"souvenir?producerName="+res.getString("title")+"\">");
                                             out.print(res.getString("title"));
                                         out.println("</a>");
                                     out.println("</td>");
@@ -76,6 +76,10 @@ public class ProducerList extends HttpServlet {
             if(choosenManufacturerName == null || "".equals(choosenManufacturerName)){
                 processRequest(request, response);
             }
+            DatabaseConnector dbConnector;
+            dbConnector = new DatabaseConnector();
+            DatabaseManager dbManager = new DatabaseManager(dbConnector.getConnection());
+            ResultSet res = dbManager.getSouvenirsByManufacturers(choosenManufacturerName);
             out.println("<!DOCTYPE html>");
             out.println("<html>");
                 out.println("<head>");
@@ -85,10 +89,6 @@ public class ProducerList extends HttpServlet {
                 out.println("</head>");
                 out.println("<body>");
                     out.println("<h1 class=\"alert alert-info\" align=\"center\">Product list of " + request.getParameter("name") + "</h1>");
-                    DatabaseConnector dbConnector;
-                    dbConnector = new DatabaseConnector();
-                    DatabaseManager dbManager = new DatabaseManager(dbConnector.getConnection());
-                    ResultSet res = dbManager.getSouvenirsByManufacturers(choosenManufacturerName);
                     out.println("<table border=\"1\">");
                         out.println("<tbody>");
                             while(res.next()){

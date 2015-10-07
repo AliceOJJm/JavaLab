@@ -10,6 +10,7 @@ import db.DatabaseConnector;
 import db.DatabaseManager;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -69,7 +70,75 @@ public class SouvenirList extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        PrintWriter out = response.getWriter();
+        String name = request.getParameter("producerName");
+        String country = request.getParameter("producerCountry");
+        if("any".equals(country) && "any".equals(name)){
+            processRequest(request, response);
+        }
+        else{
+            DatabaseConnector dbConnector;
+            DatabaseManager dbManager = null;
+            try {
+            dbConnector = new DatabaseConnector();
+                dbManager = new DatabaseManager(dbConnector.getConnection());
+            } catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
+                Logger.getLogger(SouvenirList.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            ResultSet res = null;
+            if("any".equals(name) || null == name){
+                try {
+                    res = dbManager.getSouvenirsByCountry(country);
+                } catch (SQLException ex) {
+                    Logger.getLogger(SouvenirList.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            else if("any".equals(country)|| null == country){
+                try {
+                    res = dbManager.getSouvenirsByManufacturers(name);
+                } catch (SQLException ex) {
+                    Logger.getLogger(SouvenirList.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            else{
+                //TODO both paranetrs
+            }
+            out.println("<!DOCTYPE html>");
+            out.println("<html>");
+            out.println("<head>");
+            out.println("<title>Servlet SouvenirList</title>");
+            out.println("<link rel=\"stylesheet\" type=\"text/css\" href=\"bootstrap.css\">");
+            out.println("<link rel=\"stylesheet\" type=\"text/css\" href=\"bootstrap-theme.css\">");
+            out.println("</head>");
+            out.println("<body>");
+            out.println("<h1 class=\"alert alert-info\" align=\"center\">SouvenirList at " + request.getContextPath() + "</h1>");
+            out.println("<table border=\"1\">");
+                out.println("<tbody>");
+                    try {
+                        while(res.next()){
+                            out.println("<tr>");
+                                out.println("<td>");
+                                    out.println(res.getString("id"));
+                                out.println("</td>");
+                                out.println("<td>");
+                                    out.println(res.getString("title"));
+                                out.println("</td>");
+                                out.println("<td>");
+                                    out.println(res.getString("price"));
+                                out.println("</td>");
+                                out.println("<td>");
+                                    out.println(res.getString("date"));
+                                out.println("</td>");
+                            out.println("</tr>");
+                        }
+                    } catch (SQLException ex) {
+                        Logger.getLogger(SouvenirList.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                out.println("</tbody>");
+            out.println("</table>");
+            out.println("</body>");
+            out.println("</html>");
+        }
     }
 
     /**
