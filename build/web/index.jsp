@@ -31,6 +31,9 @@
                         }
                     %>
                 </select>
+                <input type="submit" value="Find by name" />
+            </form>
+            <form action="souvenir">
                 <select name="producerCountry" class="selectpicker btn-primary">
                     <option value="any" selected>any</option>
                     <%  res = dbManager.getManufacturers();
@@ -40,7 +43,7 @@
                         dbConnector.closeConnection();
                     %>
                 </select>
-                <input type="submit" value="Find" />
+                <input type="submit" value="Find by country" />
             </form>
     </body>
 </html>

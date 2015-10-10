@@ -35,18 +35,19 @@ public class AddProducer extends HttpServlet {
             /* TODO output your page here. You may use following sample code. */
             out.println("<!DOCTYPE html>");
             out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet AddProducer</title>");
-            out.println("<link rel=\"stylesheet\" type=\"text/css\" href=\"bootstrap.css\">");
-            out.println("<link rel=\"stylesheet\" type=\"text/css\" href=\"bootstrap-theme.css\">");
-            out.println("</head>");
+                out.println("<head>");
+                    out.println("<title>Servlet AddProducer</title>");
+                    out.println("<link rel=\"stylesheet\" type=\"text/css\" href=\"../bootstrap.css\">");
+                    out.println("<link rel=\"stylesheet\" type=\"text/css\" href=\"../bootstrap-theme.css\">");
+                out.println("</head>");
             out.println("<body>");
             out.println("<h1 class=\"alert alert-info\" align=\"center\">Servlet AddProducer at " + request.getContextPath() + "</h1>");
-            out.println("<form name=\"AddProducer\" action=\"..\\producer\" method=\"POST\">\n" +
-                            "<input type=\"text\" name=\"ProducerName\" placeholder=\"Enter name..\" />\n" +
-                            "<input type=\"text\" name=\"ProducerCountry\" placeholder=\"Enter country..\"/>\n" +
+                out.println("<form name=\"AddProducer\" action=\"..\\producer\" method=\"POST\">\n" +
+                                "<input type=\"text\" name=\"ProducerName\" placeholder=\"Enter name..\" required />\n" +
+                                "<input type=\"text\" name=\"ProducerCountry\" placeholder=\"Enter country..\" required/>\n" +
                             "<input type=\"submit\" value=\"Add producer\" />\n" +
                         "</form>");
+                out.println("<a href=\"../\"><input type=\"button\" value=\"Main\" /></a>");
             out.println("</body>");
             out.println("</html>");
         }

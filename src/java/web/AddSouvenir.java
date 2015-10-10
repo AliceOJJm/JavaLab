@@ -51,8 +51,8 @@ public class AddSouvenir extends HttpServlet {
             out.println("<html>");
             out.println("<head>");
             out.println("<title>Servlet AddSouvenir</title>");
-            out.println("<link rel=\"stylesheet\" type=\"text/css\" href=\"bootstrap.css\">");
-            out.println("<link rel=\"stylesheet\" type=\"text/css\" href=\"bootstrap-theme.css\">");
+            out.println("<link rel=\"stylesheet\" type=\"text/css\" href=\"../bootstrap.css\">");
+            out.println("<link rel=\"stylesheet\" type=\"text/css\" href=\"../bootstrap-theme.css\">");
             out.println("</head>");
             out.println("<body>");
             out.println("<h1 class=\"alert alert-info\" align=\"center\">Servlet AddSouvenir at " + request.getContextPath() + "</h1>");
@@ -67,6 +67,8 @@ public class AddSouvenir extends HttpServlet {
             out.println("</select>");
             out.println("    <input type=\"submit\" value=\"Add souvenir\" />\n" +
                         "</form>");
+            
+                out.println("<a href=\"../\"><input type=\"button\" value=\"Main\" /></a>");
             out.println("</body>");
             out.println("</html>");
         }

@@ -12,9 +12,12 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -40,22 +43,23 @@ public class SouvenirList extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+            throws ServletException, IOException, ClassNotFoundException, SQLException, InstantiationException, IllegalAccessException {
         response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet SouvenirList</title>");
-            out.println("<link rel=\"stylesheet\" type=\"text/css\" href=\"bootstrap.css\">");
-            out.println("<link rel=\"stylesheet\" type=\"text/css\" href=\"bootstrap-theme.css\">");
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1 class=\"alert alert-info\" align=\"center\">Servlet SouvenirList at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
-        }
+        PrintWriter out = response.getWriter();
+            DatabaseConnector dbConnector;
+            dbConnector = new DatabaseConnector();
+            DatabaseManager dbManager = new DatabaseManager(dbConnector.getConnection());
+            ResultSet res = dbManager.getSouvenirs();
+            
+            List souvenirList = new ArrayList<>();
+            SimpleDateFormat tempDate  = new SimpleDateFormat();
+            while(res.next()){
+                tempDate.format(res.getDate("date"));
+                souvenirList.add(new Souvenir(res.getString("title"),res.getByte("manufacturer_id"),res.getDouble("price"),tempDate));
+            }
+            request.setAttribute("size", souvenirList.size());
+            request.setAttribute("souvenirArrayList", souvenirList);
+            request.getRequestDispatcher("souvenirList.jsp").forward(request, response);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -74,7 +78,11 @@ public class SouvenirList extends HttpServlet {
         String name = request.getParameter("producerName");
         String country = request.getParameter("producerCountry");
         if("any".equals(country) && "any".equals(name)){
-            processRequest(request, response);
+            try {
+                processRequest(request, response);
+            } catch (ClassNotFoundException | SQLException | InstantiationException | IllegalAccessException ex) {
+                Logger.getLogger(SouvenirList.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         else{
             DatabaseConnector dbConnector;
@@ -86,9 +94,25 @@ public class SouvenirList extends HttpServlet {
                 Logger.getLogger(SouvenirList.class.getName()).log(Level.SEVERE, null, ex);
             }
             ResultSet res = null;
+            if("any".equals(name) || "any".equals(country)){
+                try {
+                    this.processRequest(request, response);
+                } catch (ClassNotFoundException | SQLException | InstantiationException | IllegalAccessException ex) {
+                    Logger.getLogger(SouvenirList.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
             if("any".equals(name) || null == name){
                 try {
                     res = dbManager.getSouvenirsByCountry(country);
+                    List souvenirList = new ArrayList<>();
+                    SimpleDateFormat tempDate  = new SimpleDateFormat();
+                    while(res.next()){
+                        tempDate.format(res.getDate("date"));
+                        souvenirList.add(new Souvenir(res.getString("title"),res.getByte("manufacturer_id"),res.getDouble("price"),tempDate));
+                    }
+                    request.setAttribute("size", souvenirList.size());
+                    request.setAttribute("souvenirArrayList", souvenirList);
+                    request.getRequestDispatcher("souvenirList.jsp").forward(request, response);
                 } catch (SQLException ex) {
                     Logger.getLogger(SouvenirList.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -96,48 +120,24 @@ public class SouvenirList extends HttpServlet {
             else if("any".equals(country)|| null == country){
                 try {
                     res = dbManager.getSouvenirsByManufacturers(name);
+                    List souvenirList = new ArrayList<>();
+                    SimpleDateFormat tempDate  = new SimpleDateFormat();
+                    while(res.next()){
+                        tempDate.format(res.getDate("date"));
+                        souvenirList.add(new Souvenir(res.getString("title"),res.getByte("manufacturer_id"),res.getDouble("price"),tempDate));
+                    }
+                    request.setAttribute("size", souvenirList.size());
+                    request.setAttribute("souvenirArrayList", souvenirList);
+                    request.getRequestDispatcher("souvenirList.jsp").forward(request, response);
                 } catch (SQLException ex) {
                     Logger.getLogger(SouvenirList.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-            else{
-                //TODO both paranetrs
+            try {
+                processRequest(request, response);
+            } catch (ClassNotFoundException | SQLException | InstantiationException | IllegalAccessException ex) {
+                Logger.getLogger(SouvenirList.class.getName()).log(Level.SEVERE, null, ex);
             }
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet SouvenirList</title>");
-            out.println("<link rel=\"stylesheet\" type=\"text/css\" href=\"bootstrap.css\">");
-            out.println("<link rel=\"stylesheet\" type=\"text/css\" href=\"bootstrap-theme.css\">");
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1 class=\"alert alert-info\" align=\"center\">SouvenirList at " + request.getContextPath() + "</h1>");
-            out.println("<table border=\"1\">");
-                out.println("<tbody>");
-                    try {
-                        while(res.next()){
-                            out.println("<tr>");
-                                out.println("<td>");
-                                    out.println(res.getString("id"));
-                                out.println("</td>");
-                                out.println("<td>");
-                                    out.println(res.getString("title"));
-                                out.println("</td>");
-                                out.println("<td>");
-                                    out.println(res.getString("price"));
-                                out.println("</td>");
-                                out.println("<td>");
-                                    out.println(res.getString("date"));
-                                out.println("</td>");
-                            out.println("</tr>");
-                        }
-                    } catch (SQLException ex) {
-                        Logger.getLogger(SouvenirList.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                out.println("</tbody>");
-            out.println("</table>");
-            out.println("</body>");
-            out.println("</html>");
         }
     }
 
@@ -152,19 +152,36 @@ public class SouvenirList extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-           /*DatabaseConnector dbConnector;
+            DatabaseConnector dbConnector;
+            PrintWriter out = response.getWriter();
         try {
             dbConnector = new DatabaseConnector();
             DatabaseManager dbManager = new DatabaseManager(dbConnector.getConnection());
+            request.getParameter("Date");
+            
+            Date dt = new java.util.Date(); 
+//            String dbDate = date.format(dt);
+            
             int ProducerID = Integer.parseInt(request.getParameter("Producer_ID"));
             double price = Double.parseDouble(request.getParameter("Price"));
-            dbManager.insertSouvenir(new Souvenir(request.getParameter("Name"),ProducerID,price,request.getParameter("Date")));
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | SQLException ex) {
+            DateFormat formatter = new SimpleDateFormat("yyyy-mm-dd");
+            Souvenir temp = null;// new Souvenir(request.getParameter("Name"),ProducerID,price,);
+            dbManager.insertSouvenir(temp);
+            out.println(temp.getTitle());
+        } catch (IllegalAccessException ex) {
             Logger.getLogger(ProducerList.class.getName()).log(Level.SEVERE, null, ex);
-        }*/
-            PrintWriter out = response.getWriter();
-            out.println(request.getParameter("Name"));
-        processRequest(request, response);
+            out.println(1);
+        } catch (InstantiationException ex) {
+            Logger.getLogger(SouvenirList.class.getName()).log(Level.SEVERE, null, ex);
+            out.println(3);
+        } catch (SQLException ex) {
+            Logger.getLogger(SouvenirList.class.getName()).log(Level.SEVERE, null, ex);
+            out.println(ex.getMessage());
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(SouvenirList.class.getName()).log(Level.SEVERE, null, ex);
+            out.println(5);
+        }
+            out.println(request.getParameter("Date"));
     }
 
     /**
