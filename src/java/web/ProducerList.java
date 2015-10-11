@@ -6,8 +6,10 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -43,31 +45,81 @@ public class ProducerList extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        try {
             PrintWriter out = response.getWriter();
+        try {
             String choosenManufacturerName = request.getParameter("name");
-            if(choosenManufacturerName == null || "".equals(choosenManufacturerName)){
-                processRequest(request, response);
-            }
+            String souvenirName = request.getParameter("souvenirName");
+            String year = request.getParameter("year");
+            String souvenirPrice = request.getParameter("souvenirPrice");
             DatabaseConnector dbConnector;
             dbConnector = new DatabaseConnector();
             DatabaseManager dbManager = new DatabaseManager(dbConnector.getConnection());
-            ResultSet res = dbManager.getSouvenirsByManufacturers(choosenManufacturerName);
-            
-            List souvenirList = new ArrayList<>();
-            SimpleDateFormat tempDate  = new SimpleDateFormat();
-            while(res.next()){
-                tempDate.format(res.getDate("date"));
-                souvenirList.add(new Souvenir(res.getString("title"),res.getInt("manufacturer_id"),res.getDouble("price"),tempDate));
+            if(choosenManufacturerName != null && "".equals(choosenManufacturerName)){
+                ResultSet res = dbManager.getSouvenirsByManufacturers(choosenManufacturerName);
+                
+                List souvenirList = new ArrayList<>();
+                while(res.next()){
+                    souvenirList.add(new Souvenir(res.getString("title"),res.getInt("manufacturer_id"),res.getDouble("price"),res.getDate("date")));
+                }
+                request.setAttribute("name",choosenManufacturerName);
+                request.setAttribute("size", souvenirList.size());
+                request.setAttribute("souvenirArrayList", souvenirList);
+                request.getRequestDispatcher("souvenirList.jsp").forward(request, response);
             }
-            request.setAttribute("name",choosenManufacturerName);
-            request.setAttribute("size", souvenirList.size());
-            request.setAttribute("souvenirArrayList", souvenirList);
-            request.getRequestDispatcher("souvenirList.jsp").forward(request, response);
-            
+            else if(souvenirName != null && !"".equals(souvenirName) && year != null && !"".equals(year)){
+                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+                int differYear = Integer.parseInt(request.getParameter("year"))-1900;
+                Date date = new Date(), dateMax = new Date();
+                date.setYear(differYear);
+                date.setDate(1);
+                date.setMonth(0);
+                dateMax.setYear(differYear+1);
+                dateMax.setDate(1);
+                dateMax.setMonth(0);
+                ResultSet res = dbManager.getManufacturersByTitleYear(souvenirName,date,dateMax);
+                List<Manufacturer> producerList = new ArrayList<Manufacturer>();
+                int k =0 , i = 0;
+                while(res.next()){
+                    for(i = 0, k=0; i < producerList.size(); i++){
+                        if(producerList.get(i).getTitle().equals(res.getString("title"))){
+                            
+                            k++;
+                        }
+                    }
+                    if(k == 0)
+                        producerList.add(new Manufacturer(res.getString("title"),res.getString("country")));
+                }
+                request.setAttribute("size", producerList.size());
+                request.setAttribute("producerArrayList", producerList);
+                request.getRequestDispatcher("producerList.jsp").forward(request, response);
+               
+            }
+            else if(souvenirPrice != null && !"".equals(souvenirPrice)){
+                ResultSet res = dbManager.getCheapestManufacturers(Integer.parseInt(souvenirPrice));
+                List<Manufacturer> producerList = new ArrayList<Manufacturer>();
+                int k, i;
+                while(res.next()){
+                    for(i = 0, k=0; i < producerList.size(); i++){
+                        if(producerList.get(i).getTitle().equals(res.getString("title"))){
+                            k++;
+                        }
+                    }
+                    if(k == 0)
+                        producerList.add(new Manufacturer(res.getString("title"),res.getString("country")));
+                }
+                request.setAttribute("size", producerList.size());
+                request.setAttribute("producerArrayList", producerList);
+                request.setAttribute("price","(price <"+ souvenirPrice+")");
+                request.getRequestDispatcher("producerList.jsp").forward(request, response);
+                
+            }
+            else{
+                processRequest(request, response);
+            }
             dbConnector.closeConnection();
         } catch (ClassNotFoundException | SQLException | InstantiationException | IllegalAccessException ex) {
             Logger.getLogger(ProducerList.class.getName()).log(Level.SEVERE, null, ex);
+            out.println(ex.getMessage());
         }
     }
     

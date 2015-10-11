@@ -19,10 +19,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/**
- *
- * @author Dmitry
- */
 public class AddSouvenir extends HttpServlet {
 
     /**
@@ -50,25 +46,78 @@ public class AddSouvenir extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet AddSouvenir</title>");
+            out.println("<title>Add new souvenir</title>");
             out.println("<link rel=\"stylesheet\" type=\"text/css\" href=\"../bootstrap.css\">");
             out.println("<link rel=\"stylesheet\" type=\"text/css\" href=\"../bootstrap-theme.css\">");
+            out.println("<link rel=\"stylesheet\" type=\"text/css\" href=\"../style/style.css\">");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1 class=\"alert alert-info\" align=\"center\">Servlet AddSouvenir at " + request.getContextPath() + "</h1>");
+            out.println("<h1 class=\"alert alert-info\" align=\"center\">Add new souvenir</h1>");
             out.println("<form name=\"AddSouvenir\" action=\"..\\souvenir\" method=\"POST\">\n" +
-                        "    <input type=\"text\" name=\"Name\" placenolder=\"name..\" />\n" +
-                        "    <input type=\"number\" name=\"Price\" placeholder=\"price\"/>\n " +
-                        "    <input type=\"date\" name=\"Date\">\n");
-            out.println("<select name=\"Producer_ID\">");
+                        "    <input type=\"text\" style=\"position:relative; width:450px; left:10px\"  class=\"form-control\" name=\"Name\" placenolder=\"name..\" required />\n" +
+                        "    <input type=\"number\" style=\"position:relative; width:450px; left:10px\" class=\"form-control\" name=\"Price\" placeholder=\"price\" step=\"any\" required/>\n " +
+                        "    <input type=\"date\" style=\"position:relative; width:450px; left:10px\"  class=\"form-control\" name=\"Date\" required> \n");
+            out.println("<select style=\"position:relative; left:10px; width:450px\" class=\"form-control\" name=\"Producer_ID\">");
             while(res.next()){
                 out.println("<option value="+res.getString("id")+">"+res.getString("title")+"</option>");
             }
             out.println("</select>");
-            out.println("    <input type=\"submit\" value=\"Add souvenir\" />\n" +
+            out.println("    <input type=\"submit\" style=\"position:relative; left:10px;\" value=\"Add souvenir\"  class=\"btn btn-success\" />\n" +
                         "</form>");
             
-                out.println("<a href=\"../\"><input type=\"button\" value=\"Main\" /></a>");
+                out.println("<div id=\"wrapper\">\n" +
+"                <a href=\"../producer\"><input type=\"button\" value=\"View Producers\" class=\"btn btn-primary\" id=\"view_producer_button\"></a>\n" +
+"                <a href=\"../producer/add\"><input type=\"button\" value=\"Add producer\" class=\"btn btn-primary\" id=\"add_producer_button\"></a>\n" +
+"                <a href=\"../souvenir\"><input type=\"button\" value=\"View Souvenirs\" class=\"btn btn-primary\" id=\"view_souvenirs_button\"></a>\n" +
+"                <a href=\"../souvenir/add\"><input type=\"button\" value=\"Add Souvenir\" class=\"btn btn-primary\" id=\"add_souvenirs_button\"></a>\n" +
+"                <a href=\"../\"><input type=\"button\" value=\"Main\"  class=\"btn btn-primary\" id=\"main_button\" /></a>\n" +
+"            <form action=\"..\\souvenir\" id=\"find_producer_name\">\n" +
+"                <label><h4>Search products by producer</h4></label>\n" +
+"                <select name=\"producerName\"  class=\"form-control\" style=\"position: relative; width:230px; top:0px\" >\n" +
+"                    <option value=\"any\" selected>any</option>\n");
+                dbConnector = new DatabaseConnector();
+                dbManager = new DatabaseManager(dbConnector.getConnection());
+                res = dbManager.getManufacturers();
+                while(res.next()){
+                    out.println("<option value = \""+ res.getString("title") +"\">"+ res.getString("title") +"</option>");
+                }
+                out.println(
+"                </select>\n" +
+"                <input type=\"submit\" class=\"btn btn-success\" value=\"Find\" style=\"position: relative; left:230px; top:-33px\" />\n" +
+"            </form>\n" +
+"            <form action=\"..\\souvenir\" id=\"find_producer_country\">\n" +
+"                <label><h4>Search products by country</h4></label>\n" +
+"                <select name=\"producerCountry\"  class=\"form-control\" style=\"position: relative; width:230px; top:0px\" >\n" +
+"                    <option value=\"any\" selected>any</option>\n");
+                
+                res = dbManager.getManufacturers();
+                while(res.next()){
+                    out.println("<option value = \""+ res.getString("country") +"\">"+ res.getString("country") +"</option>");
+                }
+                out.println(
+"                </select>\n" +
+"                <input type=\"submit\" value=\"Find\"  class=\"btn btn-success\" value=\"Find\" style=\"position: relative; left:230px; top:-33px\"/>\n" +
+"            </form>\n" +
+"            <form action=\"..\\producer\" id=\"find_souvenir_name\">\n" +
+"                <label><h4>Search producer by product and year</h4></label>\n" +
+"                <select name=\"souvenirName\"   class=\"form-control\" style=\"position: relative; width:140px; top:0px\">\n");
+                res = dbManager.getSouvenirs();
+                while(res.next()){
+                    out.println("<option value = \""+ res.getString("title") +"\">"+ res.getString("title") +"</option>");
+                }
+                out.println(
+"                </select>\n" +
+"                <input type=\"number\"  class=\"form-control\" style=\"position: relative; width: 75px; left:145px; top:-33px \" max=\"2015\" min=\"1900\" name=\"year\" required>\n" +
+"                <input type=\"submit\" value=\"Find\"   class=\"btn btn-success\"  style=\"position: relative; left:230px; top:-66px\" />\n");
+                dbConnector.closeConnection();
+                out.println(
+"            </form>\n" +
+"            <form action=\"..\\producer\" id=\"find_souvenir_price\">\n" +
+"                <label><h4>Search producer with price <</h4></label>\n" +
+"                <input type=\"number\" min=\"0\" step=\"any\" name=\"souvenirPrice\" class=\"form-control\" style=\"position: relative; width:230px; top:0px\"  required>\n" +
+"                <input type=\"submit\" value=\"Find\"  class=\"btn btn-success\"  style=\"position: relative; left:230px; top:-33px\">\n" +
+"            </form>\n" +
+"        </div>");
             out.println("</body>");
             out.println("</html>");
         }

@@ -5,15 +5,15 @@
  */
 package subjectArea;
 
-import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class Souvenir {
     protected String title;
     protected int manufacturerId;
     protected double price;
-    protected SimpleDateFormat issueDate;
+    protected Date issueDate;
     
-    public Souvenir(String title, int manufacturerId, double price, SimpleDateFormat issueDate){
+    public Souvenir(String title, int manufacturerId, double price, Date issueDate){
         this.title = title;
         this.manufacturerId = manufacturerId;
         this.price = price;
@@ -44,7 +44,7 @@ public class Souvenir {
     /**
      * @return the issueDate
      */
-    public SimpleDateFormat getIssueDate() {
+    public Date getIssueDate() {
         return issueDate;
     }
 }

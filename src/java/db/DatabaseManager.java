@@ -51,10 +51,9 @@ public class DatabaseManager {
         return query(queryStr); 
     } 
 
-    public ResultSet getManufacturersByTitleYear(String title, SimpleDateFormat date) throws SQLException{ 
-        Date dt = new java.util.Date(); 
-        String dbDate = date.format(dt); 
-        String queryStr = "SELECT DISTINCT * FROM Manufacturers INNER JOIN Souvenirs ON Manufacturers.id = Souvenirs.manufacturer_id WHERE Souvenirs.title = '" + title + "' AND Souvenirs.date = " + dbDate + ";"; 
+    public ResultSet getManufacturersByTitleYear (String title, Date dateMin, Date dateMax) throws SQLException{ 
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        String queryStr = "SELECT DISTINCT * FROM Manufacturers INNER JOIN Souvenirs ON Manufacturers.id = Souvenirs.manufacturer_id WHERE Souvenirs.title = '" + title + " ' AND Souvenirs.date < ' "+ formatter.format(dateMax) +"' AND Souvenirs.date > '"+formatter.format(dateMin)+"'"; 
         return query(queryStr); 
     } 
 

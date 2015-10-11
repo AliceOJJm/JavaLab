@@ -52,10 +52,8 @@ public class SouvenirList extends HttpServlet {
             ResultSet res = dbManager.getSouvenirs();
             
             List souvenirList = new ArrayList<>();
-            SimpleDateFormat tempDate  = new SimpleDateFormat();
             while(res.next()){
-                tempDate.format(res.getDate("date"));
-                souvenirList.add(new Souvenir(res.getString("title"),res.getByte("manufacturer_id"),res.getDouble("price"),tempDate));
+                souvenirList.add(new Souvenir(res.getString("title"),res.getByte("manufacturer_id"),res.getDouble("price"),res.getDate("date")));
             }
             request.setAttribute("size", souvenirList.size());
             request.setAttribute("souvenirArrayList", souvenirList);
@@ -94,21 +92,19 @@ public class SouvenirList extends HttpServlet {
                 Logger.getLogger(SouvenirList.class.getName()).log(Level.SEVERE, null, ex);
             }
             ResultSet res = null;
-            if("any".equals(name) || "any".equals(country)){
+            if((country == null && name == null) || "any".equals(country) || "any".equals(name)){
                 try {
-                    this.processRequest(request, response);
+                    processRequest(request, response);
                 } catch (ClassNotFoundException | SQLException | InstantiationException | IllegalAccessException ex) {
                     Logger.getLogger(SouvenirList.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-            if("any".equals(name) || null == name){
+            if(!"any".equals(country) && null != country){
                 try {
                     res = dbManager.getSouvenirsByCountry(country);
                     List souvenirList = new ArrayList<>();
-                    SimpleDateFormat tempDate  = new SimpleDateFormat();
                     while(res.next()){
-                        tempDate.format(res.getDate("date"));
-                        souvenirList.add(new Souvenir(res.getString("title"),res.getByte("manufacturer_id"),res.getDouble("price"),tempDate));
+                        souvenirList.add(new Souvenir(res.getString("title"),res.getByte("manufacturer_id"),res.getDouble("price"),res.getDate("date")));
                     }
                     request.setAttribute("size", souvenirList.size());
                     request.setAttribute("souvenirArrayList", souvenirList);
@@ -117,14 +113,12 @@ public class SouvenirList extends HttpServlet {
                     Logger.getLogger(SouvenirList.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-            else if("any".equals(country)|| null == country){
+            if(!"any".equals(name) && null != name){
                 try {
                     res = dbManager.getSouvenirsByManufacturers(name);
                     List souvenirList = new ArrayList<>();
-                    SimpleDateFormat tempDate  = new SimpleDateFormat();
                     while(res.next()){
-                        tempDate.format(res.getDate("date"));
-                        souvenirList.add(new Souvenir(res.getString("title"),res.getByte("manufacturer_id"),res.getDouble("price"),tempDate));
+                        souvenirList.add(new Souvenir(res.getString("title"),res.getByte("manufacturer_id"),res.getDouble("price"),res.getDate("date")));
                     }
                     request.setAttribute("size", souvenirList.size());
                     request.setAttribute("souvenirArrayList", souvenirList);
@@ -158,16 +152,19 @@ public class SouvenirList extends HttpServlet {
             dbConnector = new DatabaseConnector();
             DatabaseManager dbManager = new DatabaseManager(dbConnector.getConnection());
             request.getParameter("Date");
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+            String dateInString = request.getParameter("Date");
+            Date date = new Date();
+            date = formatter.parse(dateInString);
+            java.sql.Date sqlDate = new java.sql.Date(date.getTime());
             
-            Date dt = new java.util.Date(); 
-//            String dbDate = date.format(dt);
-            
+            out.println(date);
             int ProducerID = Integer.parseInt(request.getParameter("Producer_ID"));
             double price = Double.parseDouble(request.getParameter("Price"));
-            DateFormat formatter = new SimpleDateFormat("yyyy-mm-dd");
-            Souvenir temp = null;// new Souvenir(request.getParameter("Name"),ProducerID,price,);
+            Souvenir temp = new Souvenir(request.getParameter("Name"),ProducerID,price,sqlDate);
             dbManager.insertSouvenir(temp);
-            out.println(temp.getTitle());
+            dbConnector.closeConnection();
+            processRequest(request, response);
         } catch (IllegalAccessException ex) {
             Logger.getLogger(ProducerList.class.getName()).log(Level.SEVERE, null, ex);
             out.println(1);
@@ -180,8 +177,10 @@ public class SouvenirList extends HttpServlet {
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(SouvenirList.class.getName()).log(Level.SEVERE, null, ex);
             out.println(5);
+        } catch (ParseException ex) {
+            Logger.getLogger(SouvenirList.class.getName()).log(Level.SEVERE, null, ex);
+            out.println(ex.getMessage());
         }
-            out.println(request.getParameter("Date"));
     }
 
     /**
